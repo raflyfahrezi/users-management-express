@@ -1,18 +1,12 @@
-import dotenv from 'dotenv'
-import express, { Request, Response } from 'express'
+import 'dotenv/config'
+import express from 'express'
 
-dotenv.config()
+import { router } from '@/routes'
 
 const app = express()
 const port = process.env.PORT
 
-app.get('/', (req: Request, res: Response) => {
-  res.json({
-    id: 0,
-    data: null,
-    message: 'Welcome to the server',
-  })
-})
+app.use(router)
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`)
