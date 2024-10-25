@@ -34,7 +34,7 @@ export const usersPost = async (req: Request, res: Response) => {
       responseSchema<TUsers>({
         code: res.statusCode,
         data: { ...body },
-        message: 'Add users success',
+        message: 'Create user success',
       })
     )
   } catch (error: any) {
