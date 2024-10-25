@@ -1,8 +1,10 @@
-import { createInsertSchema } from 'drizzle-zod'
 import { Request, Response } from 'express'
+import { createInsertSchema } from 'drizzle-zod'
 
+import { TUsers } from '@/models'
 import { responseSchema } from '@/utils'
 import { db, usersTable } from '@/database'
+import { STATUS_UNPROCESSABLE_ENTITY, STATUS_CONFLICT } from '@/constants'
 
 export const usersPost = async (req: Request, res: Response) => {
   const body = req.body
@@ -11,26 +13,40 @@ export const usersPost = async (req: Request, res: Response) => {
   const testResult = testBody.safeParse(body)
 
   if (!testResult.success) {
+    res.statusCode = STATUS_UNPROCESSABLE_ENTITY.code
     res.json(
-      responseSchema({
+      responseSchema<null>({
         code: res.statusCode,
-        data: {},
-        message: 'Input is unprocessable',
+        data: null,
+        message: STATUS_UNPROCESSABLE_ENTITY.message,
       })
     )
 
     return
   }
 
-  await db.insert(usersTable).values({
-    ...body,
-  })
-
-  res.json(
-    responseSchema({
-      code: res.statusCode,
-      data: { ...body },
-      message: 'Add users success',
+  try {
+    await db.insert(usersTable).values({
+      ...body,
     })
-  )
+
+    res.json(
+      responseSchema<TUsers>({
+        code: res.statusCode,
+        data: { ...body },
+        message: 'Add users success',
+      })
+    )
+  } catch (error: any) {
+    res.statusCode = STATUS_CONFLICT.code
+    res.json(
+      responseSchema<null>({
+        code: res.statusCode,
+        data: null,
+        message: error?.message ?? STATUS_CONFLICT.message,
+      })
+    )
+  } finally {
+    res.end()
+  }
 }
