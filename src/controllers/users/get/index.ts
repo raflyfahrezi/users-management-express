@@ -1,10 +1,11 @@
 import { Request, Response } from 'express'
 
 import { responseSchema } from '@/utils'
-import { db, usersTable } from '@/database'
+
+import { getUsers } from './query'
 
 export const usersGet = async (req: Request, res: Response) => {
-  const response = await db.select().from(usersTable)
+  const response = await getUsers(req)
 
   res.json(
     responseSchema({
