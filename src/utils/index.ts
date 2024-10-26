@@ -16,7 +16,7 @@ export const responseSchema = <T>({
 }
 
 export const errorHandler = (
-  err: ErrorRequestHandler,
+  err: any,
   req: Request,
   res: Response,
   next: NextFunction
