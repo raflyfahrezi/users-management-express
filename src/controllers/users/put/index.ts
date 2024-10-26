@@ -1,5 +1,5 @@
 import { eq } from 'drizzle-orm'
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import { createInsertSchema } from 'drizzle-zod'
 
 import { responseSchema } from '@/utils'
